@@ -5,25 +5,45 @@ const gameBoard = document.querySelector('.game-board');
 function handleBoxClick(e){
     console.log(e);
     e.target.innerText = currentPlayer;
-    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+    gameState[e.target.getAttribute('data')] = currentPlayer
+
+    checkWin()
+    //currentPlayer = currentPlayer === 'X' ? 'O' : 'X'; 'This equals same as below'
+    if (currentPlayer === 'X'){
+        currentPlayer = 'O'
+    }else{
+        currentPlayer = 'X'
+    }
     //update the text for whos turn it is
     // check to see who wins
+}
+function checkWin(){
+    for(let i = 0; i < winningConditions.length; i++){
+    let condition = winningConditions[i];
+    //[2,4,6]
+    if(
+        gameState[condition[0]] === gameState[condition[1]] && 
+        gameState[condition[0]] === gameState[condition[2]] &&
+        gameState[condition[0]] !== '' 
+
+        ){
+        console.log('winner')
+    }    
+    }
 }
 
 for(let i = 0; i < 9; i++){
 
+    //create a reference a div call box
+    const box = document.createElement('div');
 
-//create a reference a div call box
-const box = document.createElement('div');
+    //give the box a class called box
+    box.setAttribute('class','box');
+    box.setAttribute('data', i);
+    box.addEventListener('click', handleBoxClick)
 
-//give the box a class called box
-box.setAttribute('class','box');
-box.setAttribute('data', i);
-
-box.addEventListener('click', handleBoxClick)
-
-//append to the body
-gameBoard.appendChild(box);
+    //append to the body
+    gameBoard.appendChild(box);
 }
 
 let playerTurn = document.querySelector('.player-turn');
@@ -33,7 +53,10 @@ let currentPlayer = "X";
 let gameState = ["", "", "", "", "", "", "", "", ""];
 let gameActive = true;
 
-playerTurn.innerHTML = currentPlayer + "'s turn";
+// const playerXWon = 'player X won';
+// const playerOWon = 'player O won';
+// const tieGame = 'Tie'
+
 
 let winningConditions=[
   [0,1,2],
@@ -45,6 +68,7 @@ let winningConditions=[
   [0,4,8],
   [2,4,6],
 ];
+playerTurn.innerHTML = currentPlayer + "'s turn";
 
 // Clear button functionality
 
