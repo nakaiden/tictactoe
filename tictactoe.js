@@ -1,5 +1,23 @@
 // create a bunch of divs of boxes for the player to put th xs and os in
-
+let playerTurn = document.querySelector('.player-turn');
+let currentPlayer = "X";
+//gamestate record of the board
+let gameState = ["", "", "", "", "", "", "", "", ""];
+let gameActive = true;
+// const playerXWon = 'player X won';
+// const playerOWon = 'player O won';
+// const tieGame = 'Tie'
+let winningConditions=[
+  [0,1,2],
+  [3,4,5],
+  [6,7,8],
+  [0,3,6],
+  [1,4,7],
+  [2,5,8],
+  [0,4,8],
+  [2,4,6],
+];
+playerTurn.innerHTML = currentPlayer + "'s turn";
 //grab a reference to the game-board
 const gameBoard = document.querySelector('.game-board');
 function handleBoxClick(e){
@@ -8,19 +26,26 @@ function handleBoxClick(e){
     gameState[e.target.getAttribute('data')] = currentPlayer
 
     checkWin()
+    if(gameActive === false){
+        return
+    }
     //currentPlayer = currentPlayer === 'X' ? 'O' : 'X'; 'This equals same as below'
+    switchPlayer()
+}
+
+function switchPlayer(){
     if (currentPlayer === 'X'){
         currentPlayer = 'O'
     }else{
         currentPlayer = 'X'
     }
     //update the text for whos turn it is
-    // check to see who wins
+    playerTurn.innerHTML = currentPlayer + "'s turn";  
 }
+
 function checkWin(){
     for(let i = 0; i < winningConditions.length; i++){
     let condition = winningConditions[i];
-    //[2,4,6]
     if(
         gameState[condition[0]] === gameState[condition[1]] && 
         gameState[condition[0]] === gameState[condition[2]] &&
@@ -28,9 +53,17 @@ function checkWin(){
 
         ){
         console.log('winner')
-    }    
+        playerTurn.innerHTML = currentPlayer + " won!";
+        gameActive = false
+        }
+    }
+    if(gameState.includes('') === false && gameActive){
+        playerTurn.innerHTML = " draw!"
+        gameActive = false
     }
 }
+
+
 
 for(let i = 0; i < 9; i++){
 
@@ -46,29 +79,7 @@ for(let i = 0; i < 9; i++){
     gameBoard.appendChild(box);
 }
 
-let playerTurn = document.querySelector('.player-turn');
-let currentPlayer = "X";
 
-//gamestate record of the board
-let gameState = ["", "", "", "", "", "", "", "", ""];
-let gameActive = true;
-
-// const playerXWon = 'player X won';
-// const playerOWon = 'player O won';
-// const tieGame = 'Tie'
-
-
-let winningConditions=[
-  [0,1,2],
-  [3,4,5],
-  [6,7,8],
-  [0,3,6],
-  [1,4,7],
-  [2,5,8],
-  [0,4,8],
-  [2,4,6],
-];
-playerTurn.innerHTML = currentPlayer + "'s turn";
 
 // Clear button functionality
 
@@ -83,6 +94,11 @@ const boxes = document.querySelectorAll('.box');
     for(let i = 0; i < boxes.length; i++){
         let currentBox = boxes[i];
         currentBox.innerText = '';
+        currentPlayer = 'X';
+        gameActive = true;
+        playerTurn.innerHTML = currentPlayer + " 's turn";
+        gameState = ["", "", "", "", "", "", "", "", ""];
+
     }
 
 })
